@@ -65,6 +65,8 @@
     <button id="badgeToggle" class="badge-button" aria-label="View stats">
         <span class="material-symbols-outlined badge-icon">bar_chart</span>
     </button>
+
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="cnso" data-description="Support me on Buy me a coffee!" data-message="" data-color="#FF5D8F" data-position="Right" data-x_margin="30" data-y_margin="30"></script>
     
     <div id="statsPanel" class="stats-panel">
         <div class="drawers-container">
@@ -121,6 +123,29 @@
             </div>
         </div>
     </div>
+
+    <div id="bottomPanelTrigger" class="bottom-panel-trigger">
+        <div class="trigger-line"></div>
+    </div>
+
+    <div id="bottomPanel" class="bottom-panel">
+        <div class="panel-drag-handle"></div>
+        <div class="bottom-panel-header">
+            <span class="material-symbols-outlined">palette</span>
+            <h3>Paints Collection</h3>
+            <button id="closeBottomPanel" class="close-panel-btn">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="bottom-panel-content">
+            <div class="paints-grid" id="paintsGrid">
+            </div>
+            <div class="redeem-section">
+                <input type="text" id="redeemInput" placeholder="Enter unlock code..." class="redeem-input">
+                <button id="redeemButton" class="redeem-button">Redeem</button>
+            </div>
+        </div>
+    </div>
     
     <div id="unlockNotification" class="unlock-notification">
         <div class="unlock-content">
@@ -140,6 +165,10 @@
         <div class="timer-label">You've Been Staring For</div>
         <div class="timer-display" id="timerDisplay">00:00:00</div>
     </div>
+
+    <a href="https://www.buymeacoffee.com/cnso" target="_blank" class="mobile-bmc-btn" aria-label="Buy me a coffee">
+        <span class="material-symbols-outlined">coffee</span>
+    </a>
 
     <script src="assets/js/script.js"></script>
 </body>

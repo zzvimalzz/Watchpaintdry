@@ -116,7 +116,7 @@ body {
 .timer {
     position: fixed;
     bottom: 30px;
-    right: 30px;
+    left: 30px;
     background: rgba(255, 255, 255, 0.25);
     padding: 20px 30px;
     border-radius: 20px;
@@ -445,7 +445,6 @@ body {
 
 .stat-value {
     font-size: 1.5rem;
-    font-weight: 600;
     color: rgba(0, 0, 0, 0.9);
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
@@ -537,6 +536,112 @@ body {
     color: rgba(0, 0, 0, 0.6);
     line-height: 1.3;
     word-wrap: break-word;
+}
+
+#bmc-wbtn {
+    background: rgba(255, 93, 143, 0.25) !important;
+    backdrop-filter: blur(15px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(200%) !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 50% !important;
+}
+
+.paints-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.paint-swatch {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.paint-swatch:hover {
+    transform: scale(1.1);
+}
+
+.paint-swatch.active {
+    border-color: #333;
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+.paint-swatch.locked {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.paint-swatch.locked::after {
+    content: 'lock';
+    font-family: 'Material Symbols Outlined';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(0,0,0,0.5);
+    font-size: 24px;
+}
+
+.redeem-section {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.redeem-input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.6);
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.2s ease;
+    min-width: 0;
+}
+
+.redeem-input:focus {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.redeem-button {
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.redeem-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: translateY(-1px);
+}
+
+.redeem-button:active {
+    transform: translateY(0);
+}
+
+.mobile-bmc-btn {
+    display: none;
 }
 
 @media (max-width: 768px) {
@@ -669,12 +774,245 @@ body {
     }
     
     .timer {
-        bottom: 20px;
+        bottom: 40px;
         right: 20px;
-        padding: 15px 20px;
+        left: auto;
+        padding: 12px 16px;
+        max-width: 100%;
     }
     
     .timer-display {
         font-size: 1.5rem;
+    }
+
+    .paints-grid {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+        gap: 8px;
+    }
+
+    .redeem-section {
+        flex-direction: column;
+    }
+
+    .redeem-input,
+    .redeem-button {
+        width: 100%;
+    }
+    
+    #bmc-wbtn, #bmc-iframe {
+        display: none !important;
+    }
+
+    .mobile-bmc-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 20px;
+        right: 75px;
+        bottom: auto;
+        width: 45px;
+        height: 45px;
+        background: rgba(255, 255, 255, 0.25);
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2),
+                    inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(15px) saturate(200%);
+        -webkit-backdrop-filter: blur(15px) saturate(200%);
+        z-index: 1000;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: rgba(0, 0, 0, 0.85);
+        padding: 0;
+        outline: none;
+    }
+
+    .mobile-bmc-btn:active {
+        transform: scale(0.95);
+    }
+    
+    .mobile-bmc-btn svg {
+        width: 26px;
+        height: 26px;
+        fill: currentColor;
+        filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.8));
+    }
+}
+
+.bottom-panel-trigger {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 900;
+    transition: all 0.3s ease;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: none;
+}
+
+.bottom-panel-trigger:hover {
+    height: 50px;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.trigger-line {
+    width: 40px;
+    height: 4px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 2px;
+    margin-bottom: 4px;
+}
+
+.trigger-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(0,0,0,0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.bottom-panel {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    width: 95%;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    box-shadow: 0 -10px 40px rgba(31, 38, 135, 0.15),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+    z-index: 2000;
+    transform: translateX(-50%) translateY(100%);
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    padding-bottom: env(safe-area-inset-bottom);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.bottom-panel.open {
+    transform: translateX(-50%) translateY(0);
+}
+
+.bottom-panel.is-dragging {
+    transition: none !important;
+}
+
+.panel-drag-handle {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.bottom-panel.open .panel-drag-handle {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.bottom-panel:hover .panel-drag-handle {
+    background: rgba(255, 255, 255, 0.8);
+    width: 70px;
+}
+
+.bottom-panel-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.bottom-panel-header h3 {
+    margin: 0 0 0 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+    color: rgba(0,0,0,0.8);
+}
+
+.close-panel-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-panel-btn:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.bottom-panel-content {
+    padding: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.bottom-panel .paints-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+    .bottom-panel-trigger {
+        width: 60px;
+        height: 24px;
+        bottom: 0;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        box-shadow: none;
+        border: none;
+    }
+    .bottom-panel-trigger:hover {
+        height: 28px;
+        background: transparent;
+    }
+    
+    .trigger-line {
+        width: 30px;
+        height: 4px;
+        margin-bottom: 2px;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .trigger-text {
+        display: none;
+    }
+    
+    .bottom-panel .paints-grid {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 12px;
     }
 }

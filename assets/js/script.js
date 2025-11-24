@@ -425,4 +425,148 @@ function checkPatienceLevels(sessionMinutes) {
     }
 }
 
+const paints = [
+    { id: 'default', name: 'Classic Pink', color: 'linear-gradient(135deg, #ffd6e8 0%, #ffe5f0 50%, #ffdde7 100%)', locked: false },
+    { id: 'sage', name: 'Sage Green', color: 'linear-gradient(135deg, #C9E4CA 0%, #E1F0E1 50%, #C9E4CA 100%)', locked: false },
+    { id: 'sky', name: 'Sky Blue', color: 'linear-gradient(135deg, #d6e8ff 0%, #e5f0ff 50%, #dde7ff 100%)', locked: false },
+    { id: 'lavender', name: 'Lavender', color: 'linear-gradient(135deg, #e8d6ff 0%, #f0e5ff 50%, #e7ddff 100%)', locked: false },
+    { id: 'golden', name: 'Golden Hour', color: 'linear-gradient(135deg, #ffd700 0%, #ffec8b 50%, #ffdf00 100%)', locked: true, code: 'GOLDEN2025' },
+    { id: 'midnight', name: 'Midnight', color: 'linear-gradient(135deg, #2c3e50 0%, #3498db 50%, #2c3e50 100%)', locked: true, code: 'NIGHTOWL' },
+    { id: 'rainbow', name: 'Prism', color: 'linear-gradient(135deg, #ff0000 0%, #00ff00 50%, #0000ff 100%)', locked: true, code: 'PRISM' }
+];
+
+let unlockedPaints = JSON.parse(localStorage.getItem('unlockedPaints') || '["default", "sage", "sky", "lavender"]');
+let currentPaint = localStorage.getItem('currentPaint') || 'default';
+
+function renderPaints() {
+    const grid = document.getElementById('paintsGrid');
+    grid.innerHTML = '';
+    
+    paints.forEach(paint => {
+        const isLocked = paint.locked && !unlockedPaints.includes(paint.id);
+        const swatch = document.createElement('div');
+        swatch.className = `paint-swatch ${isLocked ? 'locked' : ''} ${currentPaint === paint.id ? 'active' : ''}`;
+        swatch.style.background = paint.color;
+        swatch.title = isLocked ? 'Locked (Redeem code to unlock)' : paint.name;
+        
+        swatch.addEventListener('click', () => {
+            if (!isLocked) {
+                setPaint(paint.id);
+            } else {
+                alert('This paint is locked! Enter a code to unlock it.');
+            }
+        });
+        
+        grid.appendChild(swatch);
+    });
+}
+
+function setPaint(paintId) {
+    const paint = paints.find(p => p.id === paintId);
+    if (paint) {
+        currentPaint = paintId;
+        localStorage.setItem('currentPaint', paintId);
+        document.querySelector('.paint-wall').style.background = paint.color;
+        renderPaints();
+    }
+}
+
+document.getElementById('redeemButton').addEventListener('click', () => {
+    const input = document.getElementById('redeemInput');
+    const code = input.value.trim().toUpperCase();
+    
+    const paintToUnlock = paints.find(p => p.code === code);
+    
+    if (paintToUnlock) {
+        if (!unlockedPaints.includes(paintToUnlock.id)) {
+            unlockedPaints.push(paintToUnlock.id);
+            localStorage.setItem('unlockedPaints', JSON.stringify(unlockedPaints));
+            renderPaints();
+            alert(`Unlocked: ${paintToUnlock.name}!`);
+            setPaint(paintToUnlock.id);
+            input.value = '';
+        } else {
+            alert('You already unlocked this paint!');
+        }
+    } else {
+        alert('Invalid code. Try again!');
+    }
+});
+
+setPaint(currentPaint);
+renderPaints();
+
 updateTimer();
+
+const bottomPanelTrigger = document.getElementById('bottomPanelTrigger');
+const bottomPanel = document.getElementById('bottomPanel');
+const closeBottomPanel = document.getElementById('closeBottomPanel');
+
+if (bottomPanelTrigger && bottomPanel && closeBottomPanel) {
+    bottomPanelTrigger.addEventListener('click', () => {
+        bottomPanel.classList.add('open');
+    });
+
+    closeBottomPanel.addEventListener('click', () => {
+        bottomPanel.classList.remove('open');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (bottomPanel.classList.contains('open') && 
+            !bottomPanel.contains(e.target) && 
+            !bottomPanelTrigger.contains(e.target)) {
+            bottomPanel.classList.remove('open');
+        }
+    });
+
+    const dragHandle = bottomPanel.querySelector('.panel-drag-handle');
+    let isDragging = false;
+    let startY = 0;
+    let currentTranslateY = 0;
+
+    const getClientY = (e) => e.touches ? e.touches[0].clientY : e.clientY;
+
+    const startDrag = (e) => {
+        isDragging = true;
+        startY = getClientY(e);
+        bottomPanel.classList.add('is-dragging');
+    };
+
+    const drag = (e) => {
+        if (!isDragging) return;
+
+        e.preventDefault(); 
+        
+        const currentY = getClientY(e);
+        const deltaY = currentY - startY;
+        
+        if (deltaY > 0) {
+            currentTranslateY = deltaY;
+            bottomPanel.style.transform = `translateX(-50%) translateY(${currentTranslateY}px)`;
+        }
+    };
+
+    const endDrag = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        bottomPanel.classList.remove('is-dragging');
+        
+        if (currentTranslateY > 100) {
+            bottomPanel.classList.remove('open');
+        }
+        
+        bottomPanel.style.transform = ''; 
+        currentTranslateY = 0;
+    };
+
+    if (dragHandle) {
+        dragHandle.addEventListener('mousedown', startDrag);
+        dragHandle.addEventListener('touchstart', startDrag);
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+    }
+}
